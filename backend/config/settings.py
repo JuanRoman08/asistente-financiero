@@ -1,7 +1,5 @@
 import os
 from pathlib import Path
-import pymysql
-pymysql.install_as_MySQLdb()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -16,10 +14,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'api_transactions',
 
     # Apps personalizadas
     'core',
+    'api_transactions',
 
     # Terceros
     'rest_framework',
@@ -57,15 +55,11 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
-# ✅ Conexión MySQL corregida
+# ✅ Base de datos SQLite (portátil y sin MySQL)
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'farmacias_peruanas_db',
-        'USER': 'root',
-        'PASSWORD': 'root',
-        'HOST': '127.0.0.1',
-        'PORT': '3306',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
@@ -86,10 +80,10 @@ USE_TZ = True
 STATIC_URL = '/static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# CORS para frontend React
+# CORS para permitir frontend
 CORS_ALLOW_ALL_ORIGINS = True
 
-# JWT
+# Autenticación JWT
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
