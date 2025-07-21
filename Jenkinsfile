@@ -2,8 +2,8 @@ pipeline {
   agent any
 
   environment {
-    DOCKERHUB_CRED = 'dockerhub-cred-id'
-    IMAGE_TAG = "react-backend-fullstack-${env.BUILD_NUMBER}"
+    DOCKERHUB_CRED = 'dockerhub-cred-id' // ID de la credencial en Jenkins para DockerHub
+    IMAGE_TAG = "juanroman08/asistente-financiero-${BUILD_NUMBER}"
   }
 
   stages {
@@ -23,7 +23,12 @@ pipeline {
 
     stage('Build Docker Images') {
       steps {
-        sh 'docker-compose build'
+        script {
+          sh """
+            docker build -t ${IMAGE_TAG}-frontend ./frontend
+            docker build -t ${IMAGE_TAG}-backend ./backend
+          """
+        }
       }
     }
 
@@ -31,7 +36,10 @@ pipeline {
       steps {
         script {
           docker.withRegistry('https://index.docker.io/v1/', DOCKERHUB_CRED) {
-            sh 'docker-compose push'
+            sh """
+              docker push ${IMAGE_TAG}-frontend
+              docker push ${IMAGE_TAG}-backend
+            """
           }
         }
       }
@@ -40,14 +48,18 @@ pipeline {
     stage('Deploy (Remoto)') {
       steps {
         sshagent(['tu-servidor-key']) {
-          sh '''
+          sh """
             ssh -o StrictHostKeyChecking=no user@host <<EOF
-              cd /ruta/proyecto
-              docker-compose pull
-              docker-compose down
-              docker-compose up -d
+              docker pull ${IMAGE_TAG}-frontend
+              docker pull ${IMAGE_TAG}-backend
+              docker stop backend || true
+              docker stop frontend || true
+              docker rm backend || true
+              docker rm frontend || true
+              docker run -d --name backend -p 8000:8000 ${IMAGE_TAG}-backend
+              docker run -d --name frontend -p 3000:80 ${IMAGE_TAG}-frontend
             EOF
-          '''
+          """
         }
       }
     }

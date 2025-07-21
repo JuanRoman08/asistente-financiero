@@ -2,18 +2,16 @@ version: "3.8"
 
 services:
   backend:
-    build: ./backend
+    image: juanroman08/asistente-financiero-${IMAGE_TAG}-backend
     ports:
       - "8000:8000"
-    volumes:
-      - ./backend:/app
     env_file:
       - ./backend/.env
     depends_on:
       - db
 
   frontend:
-    build: ./frontend
+    image: juanroman08/asistente-financiero-${IMAGE_TAG}-frontend
     ports:
       - "3000:80"
     depends_on:
