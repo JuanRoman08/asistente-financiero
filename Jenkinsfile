@@ -7,13 +7,6 @@ pipeline {
   }
 
   stages {
-    // Este stage se puede omitir si Jenkins ya hace checkout desde la configuración del job
-    stage('Checkout') {
-      steps {
-        git 'https://github.com/JuanRoman08/asistente-financiero.git'
-      }
-    }
-
     stage('Build Frontend') {
       steps {
         dir('frontend') {
@@ -43,7 +36,7 @@ pipeline {
       steps {
         sshagent(['tu-servidor-key']) {
           sh '''
-            ssh user@host <<EOF
+            ssh -o StrictHostKeyChecking=no user@host <<EOF
               cd /ruta/proyecto
               docker-compose pull
               docker-compose down
