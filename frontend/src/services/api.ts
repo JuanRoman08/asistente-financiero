@@ -1,13 +1,11 @@
-// frontend/src/services/api.ts
 import axios from 'axios';
 
-const API_URL = 'http://localhost:8000/api';
+const API_URL = import.meta.env.VITE_API_URL;
 
 const api = axios.create({
   baseURL: API_URL,
 });
 
-// Interceptor para añadir automáticamente el token
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('token');
@@ -30,3 +28,5 @@ export const getTransactions = () => {
 export const addTransaction = (data: any) => {
   return api.post('/transactions/', data);
 };
+
+export default api;

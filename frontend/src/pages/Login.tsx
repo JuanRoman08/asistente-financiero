@@ -25,7 +25,8 @@ const Login = ({ onLogin }: Props) => {
       } else {
         alert('Token no recibido');
       }
-    } catch {
+    } catch (error: any) {
+      console.error('Error de login:', error);
       alert('Credenciales incorrectas');
     }
   };
@@ -45,14 +46,14 @@ const Login = ({ onLogin }: Props) => {
         className="p-3 text-base rounded bg-white/10 border border-white/20 focus:outline-none focus:ring-2 focus:ring-blue-400"
         placeholder="Usuario"
         value={username}
-        onChange={e => setUsername(e.target.value)}
+        onChange={(e) => setUsername(e.target.value)}
       />
       <input
         className="p-3 text-base rounded bg-white/10 border border-white/20 focus:outline-none focus:ring-2 focus:ring-blue-400"
         type="password"
         placeholder="Contraseña"
         value={password}
-        onChange={e => setPassword(e.target.value)}
+        onChange={(e) => setPassword(e.target.value)}
       />
       <button
         type="submit"
