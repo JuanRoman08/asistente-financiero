@@ -9,16 +9,14 @@ pipeline {
   stages {
 
     stage('Build Frontend') {
-      agent {
-        docker {
-          image 'node:18-alpine'
-          args '-v $HOME/.npm:/root/.npm' // Opcional: cache npm
-        }
-      }
       steps {
-        dir('frontend') {
-          sh 'npm install'
-          sh 'npm run build'
+        script {
+          docker.image('node:18-alpine').inside {
+            dir('frontend') {
+              sh 'npm install'
+              sh 'npm run build'
+            }
+          }
         }
       }
     }
@@ -53,6 +51,5 @@ pipeline {
         }
       }
     }
-
   }
 }
